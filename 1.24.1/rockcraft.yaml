@@ -1,6 +1,6 @@
 name: ztunnel
 base: ubuntu@24.04
-version: '0.1'
+version: '1.24.1'
 summary: Ztunnel provides an implementation of the ztunnel component of ambient mesh
 description: |
   Ztunnel is intended to be a purpose built implementation of the node proxy in ambient mesh. Part of the goals of this included keeping a narrow feature set, implementing only the bare minimum requirements for ambient. This ensures the project remains simple and high performance.
@@ -10,7 +10,7 @@ platforms:
 entrypoint-service: ztunnel
 services:
   ztunnel:
-    command: /usr/bin/ztunnel [ ]
+    command: /bin/ztunnel [ ]
     override: replace
     startup: enabled
 
@@ -22,6 +22,3 @@ parts:
     rust-channel: 1.81.0
     build-packages:
       - protobuf-compiler
-    override-build: |
-      cargo build --release
-      install -t /usr/bin out/rust/release/ztunnel

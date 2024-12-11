@@ -10,7 +10,7 @@ platforms:
 entrypoint-service: ztunnel
 services:
   ztunnel:
-    command: /usr/bin/ztunnel [ ]
+    command: /bin/ztunnel [ ]
     override: replace
     startup: enabled
 
@@ -22,6 +22,3 @@ parts:
     rust-channel: 1.79.0
     build-packages:
       - protobuf-compiler
-    override-build: |
-      cargo build --release
-      install -t /usr/bin out/rust/release/ztunnel
