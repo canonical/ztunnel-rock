@@ -15,10 +15,35 @@ services:
     startup: enabled
 
 parts:
-  build:
+  ztunnel:
     plugin: rust
     source: https://github.com/istio/ztunnel.git
     source-tag: 1.23.3
     rust-channel: 1.79.0
     build-packages:
       - protobuf-compiler
+  # install packages provided by the istio/iptables distroless image, which is a base for ztunnel
+  # as seen [here](https://github.com/istio/istio/blob/master/pilot/docker/Dockerfile.ztunnel).
+  # The base image is defined [here](https://github.com/istio/istio/blob/master/docker/iptables.yaml) using apko,
+  # which is a tool for making distroless-like images.  apko's package names do not directly map to those in apt,
+  # so a bit of inference is applied to the list below.
+  stage-dependency-packages:
+    plugin: nil
+    stage-packages:
+      - ca-certificates
+      - libc6  # glibc
+      - iptables  # includes both iptables and ip6tables
+      - conntrack  # libnetfilter_conntrack and libnfnetlink (and maybe libmnl?)
+      - gcc
+  ca-certs:
+    plugin: nil
+    overlay-packages: [ca-certificates]
+  deb-security-manifest:
+    plugin: nil
+    after:
+      - ztunnel
+      - ca-certs
+    override-prime: |
+      set -x
+      mkdir -p $CRAFT_PRIME/usr/share/rocks/
+      (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && dpkg-query --admindir=$CRAFT_PRIME/var/lib/dpkg/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) > $CRAFT_PRIME/usr/share/rocks/dpkg.query
