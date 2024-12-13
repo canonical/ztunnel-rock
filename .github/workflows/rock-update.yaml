@@ -9,7 +9,7 @@ jobs:
   build:
     uses: canonical/observability/.github/workflows/rock-update.yaml@main
     with:
-      rock-name: istio-ztunnel-cni
+      rock-name: istio-ztunnel
       source-repo: istio/istio
       check-go: true
     secrets: inherit
