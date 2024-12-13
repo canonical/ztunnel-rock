@@ -1,4 +1,4 @@
-name: ztunnel
+name: istio-ztunnel
 base: ubuntu@24.04
 version: '1.23.3'
 summary: Ztunnel provides an implementation of the ztunnel component of ambient mesh
@@ -15,7 +15,7 @@ services:
     startup: enabled
 
 parts:
-  ztunnel:
+  build:
     plugin: rust
     source: https://github.com/istio/ztunnel.git
     source-tag: 1.23.3
@@ -41,7 +41,8 @@ parts:
   deb-security-manifest:
     plugin: nil
     after:
-      - ztunnel
+      - build
+      - stage-dependency-packages
       - ca-certs
     override-prime: |
       set -x

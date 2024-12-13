@@ -1,4 +1,4 @@
-name: ztunnel
+name: istio-ztunnel
 base: ubuntu@24.04
 version: '1.24.1'
 summary: Ztunnel provides an implementation of the ztunnel component of ambient mesh
@@ -41,7 +41,8 @@ parts:
   deb-security-manifest:
     plugin: nil
     after:
-      - ztunnel
+      - build
+      - stage-dependency-packages
       - ca-certs
     override-prime: |
       set -x
